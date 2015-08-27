@@ -1,0 +1,113 @@
+<dom-module id="silicon-symbol">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      div {
+        display: flex;
+      }
+
+      .name {
+        flex: 1 1 auto;
+      }
+      pre {
+        margin: 0px;
+        margin-right: 4px;
+      }
+    </style>
+
+    <div>
+      <pre><code>[[_prettyAddress(address)]]</code></pre>
+      <pre><code>[[_prettyKind(kind)]]</code></pre>
+      <pre><code class="name">[[_prettyName(name)]]</code></pre>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'silicon-symbol',
+
+      properties: {
+        symbol: {
+          type: Object
+        },
+        mode: {
+          type: String,
+          value: 'elf'
+        },
+        format: {
+          type: String,
+          value: 'nlist'
+        },
+        address: {
+          readOnly: true,
+          computed: '_computeAddress(symbol)'
+        },
+        kind: {
+          readOnly: true,
+          computed: '_computeKind(symbol)'
+        },
+        name: {
+          readOnly: true,
+          computed: '_computeName(symbol)'
+        }
+      },
+
+      _pad: function(len, max, padding){
+        var pad = '';
+        var padding = padding ? padding : '0';
+        for (var i = 0; i < (max - len); i++) {
+          pad += padding;
+        }
+        return pad;
+      },
+
+      _prettyAddress: function(address) {
+        if (this.mode === 'elf') {
+          var res = address.toString(16);
+          return this._pad(res.length, 16) + res + ' ';
+        }
+        return this._pad(16, 16, ' ');
+      },
+
+      _prettyKind: function(kind){
+        if (this.mode === 'elf'){
+          return this._pad(kind.length, 9, ' ') + kind + ' ';
+        }
+        return this._pad(2, 16, '-');
+      },
+
+      _prettyName: function(name){
+        if (this.mode === 'elf'){
+          return name;
+        }
+        return this._pad(2, 16, '-');
+      },
+
+      _computeAddress: function(symbol) {
+        if (this.mode === 'elf') {
+          if (!symbol.address || symbol.address < 0){
+            return parseInt(symbol.st_value, 16);
+          }else return parseInt(symbol.address, 16);
+        }
+        return 0x0;
+      },
+
+      _computeKind: function(symbol){
+        if (this.mode === 'elf'){
+          return symbol.type;
+        }
+        return '--';
+      },
+
+      _computeName: function(symbol){
+        if (this.mode === 'elf'){
+          return symbol.name;
+        }
+        return '--';
+      }
+    })
+  </script>
+</dom-module>

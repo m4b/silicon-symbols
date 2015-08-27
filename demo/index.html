@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>silicon-symbols Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../iron-ajax/iron-ajax.html">
+  <link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+  <link rel="import" href="../silicon-symbols.html">
+
+</head>
+
+<body unresolved class="fullbleed vertical layout">
+  <template id="t" is="dom-bind">
+    <p>An example of
+      <code>&lt;silicon-symbols&gt;</code>:</p>
+
+    <silicon-symbols class="flex" id="syms" symbols="[[symbols.dynamicSymbols.value]]"></silicon-symbols>
+    <iron-ajax url="data.json" auto last-response="{{symbols}}"></iron-ajax>
+  </template>
+
+  <script>
+    document.querySelector('#t').addEventListener('dom-change', function() {
+      var syms = document.querySelector('#syms');
+
+    });
+  </script>
+
+</body>
+
+</html>

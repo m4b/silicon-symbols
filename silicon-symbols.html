@@ -1,0 +1,95 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="silicon-symbol.html">
+
+<!--
+Displays a list of symbols.
+
+Currently only supports ELF (will add mach support in future versions).
+
+The ELF format requires a JSON array of objects which have at least the following:
+
+- an `address` field or `st_value` field (`address` takes precedence)
+- a `name` field (you need to do the lookup using `st_name`, which indexes into the corresponding string table)
+- a `type` field (you need to convert the type ordinal information inside of `st_info` into the string representation).
+  A future version may not require this and will perform the lookup using standard conversions if you provide an `st_info`)
+
+Example:
+
+    <silicon-symbols symbols="[[symbols]]"></silicon-symbols>
+
+@demo
+-->
+<dom-module id="silicon-symbols">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Inconsolata', monospace;
+      }
+      /* @blasten: https://github.com/PolymerElements/iron-list/issues/73 */
+
+      code {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+      }
+    </style>
+
+    <code>
+      <iron-list items="[[symbols]]">
+        <template>
+          <silicon-symbol mode="[[mode]]" format="[[format]]" symbol="[[item]]"></silicon-symbol>
+        </template>
+      </iron-list>
+    </code>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+
+    is: 'silicon-symbols',
+
+    properties: {
+      /**
+       * The array of symbols to display.
+       *
+       * @type {[{st_value: Number, name: String, type: String}]}
+       */
+      symbols: {
+        type: Array
+      },
+
+      /**
+       * The symbol mode: only `elf` (TODO: `mach`) supported at this time.
+       */
+      mode: {
+        type: String,
+        value: 'elf'
+      },
+      /**
+       * The format style to display the symbol list: only `nlist` "style" supported at this time.
+       */
+      format: {
+        type: String,
+        value: 'nlist'
+      }
+    },
+
+    attached: function() {}
+      // Element Behavior
+
+  });
+</script>
