@@ -28,4 +28,4 @@ where symbols is an array of objects whose fields are at least:
 
 # Documentation
 
-See you the [documentation](http://github.m4b.io/silicon-symbols) for more information and a demo.
+See you the [documentation](http://m4b.github.io/silicon-symbols) for more information and a demo.
