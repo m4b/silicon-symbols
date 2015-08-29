@@ -28,6 +28,8 @@ Example:
         position: relative;
         box-sizing: border-box;
         font-family: 'Inconsolata', monospace;
+        --selected-background-color: black;
+        --selected-color: white;
       }
       /* @blasten: https://github.com/PolymerElements/iron-list/issues/73 */
 
@@ -44,12 +46,17 @@ Example:
       iron-list {
         flex: 1 1 auto;
       }
+
+      .selected {
+        background-color: var(--selected-background-color);
+        color: var(--selected-color);
+      }
     </style>
 
     <code>
-      <iron-list items="[[symbols]]">
+      <iron-list items="[[symbols]]" selection-enabled selected-items="{{selectedSymbol}}">
         <template>
-          <silicon-symbol mode="[[mode]]" format="[[format]]" symbol="[[item]]"></silicon-symbol>
+          <silicon-symbol class$="[[_computeClass(selected)]]" mode="[[mode]]" format="[[format]]" symbol="[[item]]"></silicon-symbol>
         </template>
       </iron-list>
     </code>
@@ -85,7 +92,18 @@ Example:
       format: {
         type: String,
         value: 'nlist'
+      },
+      /**
+       * The currently selected symbol.
+       */
+      selectedSymbol: {
+        type: Object,
+        notify: true
       }
+    },
+
+    _computeClass: function(selected) {
+      return selected ? 'selected' : '';
     },
 
     attached: function() {}

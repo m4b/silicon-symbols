@@ -12,6 +12,7 @@
       .name {
         flex: 1 1 auto;
       }
+
       pre {
         margin: 0px;
         margin-right: 4px;
@@ -19,10 +20,12 @@
     </style>
 
     <div>
-      <pre><code>[[_prettyAddress(address)]]</code></pre>
-      <pre><code>[[_prettyKind(kind)]]</code></pre>
-      <pre><code class="name">[[_prettyName(name)]]</code></pre>
+      <pre><code>[[_prettyAddress(address)]]</code></pre>&nbsp;
+      <pre><code>[[_prettyKind(kind)]]</code></pre>&nbsp;
+      <code class="name">[[_prettyName(name)]]</code>&nbsp;
+      <code class="">[[_prettySize(size)]]</code>
     </div>
+
 
   </template>
   <script>
@@ -42,20 +45,28 @@
           value: 'nlist'
         },
         address: {
+          type: Number,
           readOnly: true,
           computed: '_computeAddress(symbol)'
         },
         kind: {
+          type: String,
           readOnly: true,
           computed: '_computeKind(symbol)'
         },
         name: {
+          type: String,
           readOnly: true,
           computed: '_computeName(symbol)'
+        },
+        size: {
+          type: Number,
+          readOnly: true,
+          computed: '_computeSize(symbol)'
         }
       },
 
-      _pad: function(len, max, padding){
+      _pad: function(len, max, padding) {
         var pad = '';
         var padding = padding ? padding : '0';
         for (var i = 0; i < (max - len); i++) {
@@ -67,47 +78,62 @@
       _prettyAddress: function(address) {
         if (this.mode === 'elf') {
           var res = address.toString(16);
-          return this._pad(res.length, 16) + res + ' ';
+          return this._pad(res.length, 16, ' ') + res + ' ';
         }
         return this._pad(16, 16, ' ');
       },
 
-      _prettyKind: function(kind){
-        if (this.mode === 'elf'){
+      _prettyKind: function(kind) {
+        if (this.mode === 'elf') {
           return this._pad(kind.length, 9, ' ') + kind + ' ';
         }
         return this._pad(2, 16, '-');
       },
 
-      _prettyName: function(name){
-        if (this.mode === 'elf'){
+      _prettyName: function(name) {
+        if (this.mode === 'elf') {
           return name;
         }
         return this._pad(2, 16, '-');
       },
 
+      _prettySize: function(size) {
+        if (this.mode === 'elf') {
+          return ' (' + size + ')';
+        }
+        return ' (0)';
+      },
+
       _computeAddress: function(symbol) {
         if (this.mode === 'elf') {
-          if (!symbol.address || symbol.address < 0){
+          if (!symbol.address || symbol.address < 0) {
             return parseInt(symbol.st_value, 16);
-          }else return parseInt(symbol.address, 16);
+          } else return parseInt(symbol.address, 16);
         }
         return 0x0;
       },
 
-      _computeKind: function(symbol){
-        if (this.mode === 'elf'){
+      _computeKind: function(symbol) {
+        if (this.mode === 'elf') {
           return symbol.type;
         }
         return '--';
       },
 
-      _computeName: function(symbol){
-        if (this.mode === 'elf'){
+      _computeName: function(symbol) {
+        if (this.mode === 'elf') {
           return symbol.name;
         }
         return '--';
+      },
+
+      _computeSize: function(symbol) {
+        if (this.mode === 'elf') {
+          return parseInt(symbol.st_size);
+        }
+        return 0x0;
       }
+
     })
   </script>
 </dom-module>
